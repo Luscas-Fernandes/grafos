@@ -7,15 +7,43 @@ class Grafo:
         
         return system('clear')
 
+    def isValorated(self):
+        valorado = -1
+        valorado = int(input("O grafo é valorado ? (0/1): "))
+        
+        while valorado not in [0, 1]:
+            print("Valor Inválido!")
+            valorado = int(input("O grafo é valorado ? (0/1): "))
+
+        return valorado
+    
+    def isDirected(self):
+        directed = -1
+        directed = int(input("O grafo é direcionado ? (0/1): "))
+        
+        while directed not in [0, 1]:
+            print("Valor Inválido!")
+            directed = int(input("O grafo é direcionado ? (0/1): "))
+
+        return directed
+    
+    def retrieveVertices(self):
+        print("\nEnter vazio para parar de adicionar vértices")
+        vertice = input("Nome do vértice: ")
+
+    def buildMatrix(self, graph, valorado, direcionado):
+        pass
+    
 
     def retrieveGraph(self): #Backtracking se aplicaria acho. Hash1(vert, aresta) HashConexoes(vertice, vertices) ?
         graph = {}
+        valorado = self.isValorated()
+        direcionado = self.isDirected()
         vertice = "qualquer_coisa"
 
         # Pega vértices
         while vertice:
-            print("\nEnter vazio para parar de adicionar vértices")
-            vertice = input("Nome do vértice: ")
+            vertice = self.retrieveVertices()
 
             if not vertice and not graph:
                 Grafo.clearScreen()
@@ -30,20 +58,21 @@ class Grafo:
         edge_name = "oi"
 
         while edge_name:
-            edge_name = "oi"
+            # edge_name = "oi"
             edge_value = 0
             src_vertice = ""
             dst_vertice = ""
 
 
-            print("\nNome de aresta vazio para parar de adicionar arestas")
+            print("\nVazio para parar de adicionar arestas")
 
             edge_name = input("Nome da aresta: ")
 
             if not edge_name: 
                 continue
 
-            edge_value = int(input("Valor da aresta: "))
+            if valorado:
+                edge_value = int(input("Valor da aresta: "))
 
             print("\nVértices presentes no grafo: ")
             for keys in graph.items():
@@ -63,7 +92,11 @@ class Grafo:
                     print("vértice que chega a aresta não existe")
                     dst_vertice = ""
             
-            graph[src_vertice].append([edge_name, edge_value, dst_vertice]) # Add nome da aresta, destino e valor da aresta         
+            if valorado:
+                graph[src_vertice].append([edge_name, edge_value, dst_vertice]) # Add nome da aresta, valor da aresta e destino         
+            else:
+                graph[src_vertice].append([edge_name, dst_vertice]) # Add nome da aresta, destino
+
 
         return graph
 
