@@ -1,71 +1,162 @@
-from os import system, name
+import sys
 
-class Grafo:
-    def clearScreen(): # Depois mudar a função para separar a chamada de inserção de vértice e aresta. Podem ser colocados separadamente!
-        if name == 'nt':
-            return system('cls')
+class Graph:
+
+    directed = False
+    vertices = []
+    edges = []
+
+    def __init__(self) -> None:
+        pass
+
+    def getVertex(self, name):
+        for vertice in self.vertices:
+            if(vertice.name == name):
+                return vertice
+            
+        return None
+    
+    def addEdge(self, new_edge):
+        for edge in self.edges:
+            if edge.name == new_edge.name:
+                print(f'Edge {new_edge.name} already exists!')
+                return 1
+
+        self.edges.append(new_edge)
+
+
+class Vertex:
+
+    edges = []
+
+    def __init__(self, name):
+        self.name = name
+
+    def addEdge(self, new_edge):
+        for edge in self.edges:
+            if edge.name == new_edge.name:
+                print(f'Edge {new_edge.name} already exists!')
+                return 1
+
+        self.edges.append(new_edge)
+
+
+class Edge:
+
+    def __init__(self, name, pair, weight):
+        self.name = name
+        self.pair = pair
+        self.weight = weight
         
-        return system('clear')
 
 
-    def retrieveGraph(self): #Backtracking se aplicaria acho. Hash1(vert, aresta) HashConexoes(vertice, vertices) ?
-        graph = {}
-        vertice = "qualquer_coisa"
+graph = Graph()
 
-        # Pega vértices
-        while vertice:
-            print("\nEnter vazio para parar de adicionar vértices")
-            vertice = input("Nome do vértice: ")
+#se for usado o txt para inserir tudo de uma vez:
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
 
-            if not vertice and not graph:
-                Grafo.clearScreen()
-                return exit("\nlista de vértices está vazia.\nPrograma finalizado forçadamente")
+    with open(filename, 'r+') as file:
 
-            if not vertice:
-                continue
+        line = ' '
+
+        while line:
+            line = file.readline()
+            line = line.strip()
+
+            if not line:
+                break
             
-            graph[vertice] = []
-
-        # pega arestas
-        edge_name = "oi"
-
-        while edge_name:
-            edge_name = "oi"
-            edge_value = 0
-            src_vertice = ""
-            dst_vertice = ""
-
-
-            print("\nNome de aresta vazio para parar de adicionar arestas")
-
-            edge_name = input("Nome da aresta: ")
-
-            if not edge_name: 
+            if graph.getVertex(line):
+                print(f'Vertex {line} already exists!')
                 continue
 
-            edge_value = int(input("Valor da aresta: "))
+            graph.vertices.append(Vertex(line))
 
-            print("\nVértices presentes no grafo: ")
-            for keys in graph.items():
-                print(keys)
-            print("\n")
+        line = ' '
 
+        while line:
+            line = file.readline()
+            line = line.rstrip('\n')
 
-            while not src_vertice:
-                src_vertice = input("Vértices que está saindo esta aresta: ")
-                if src_vertice not in graph:
-                    print("vértice que recebe a aresta não existe")
-                    src_vertice = ""
+            if not line:
+                break
 
-            while not dst_vertice:
-                dst_vertice = input("Vértices que está chegando esta aresta: ")
-                if dst_vertice not in graph:
-                    print("vértice que chega a aresta não existe")
-                    dst_vertice = ""
+            separator = '--'
+
+            if line.find(separator) == -1 and line.find('->'):
+                separator = '->'
+                graph.directed = True
+
+            try:
+                name, weight = line.split(';')
+
+            except:
+                name = line
+                pair = line.split(separator)
+                weight = 0
+                
+            finally:
+                pair = name.split(separator)
+                new_edge = Edge(name, pair, weight)
+
+                vertex = graph.getVertex(pair[0])
+                vertex.addEdge(new_edge)
+                graph.addEdge(new_edge)
+
+#se for inserção manual:
+else:
+    name = ' '
+
+    while name:
+        name = input("Input new vertex name: ")
+
+        if not name:
+            break
+
+        if graph.getVertex(name):
+            print(f'Vertex {name} already exists!')
+            continue
+
+        graph.vertices.append(Vertex(name))
+
+    print("\n\nEdge input format:\n\n(source vertex name)(-- or ->)(destiny vertex name)\nto add weight, add ;(weight)\n\n")
+
+    prompt = ' '
+
+    while prompt:
+        prompt = input("Input new edge:")
+
+        if not prompt:
+            break
+
+        separator = '--'
+
+        if prompt.find(separator) == -1 and prompt.find('->'):
+            separator = '->'
+            graph.directed = True
+
+        try:
+            name, weight = prompt.split(';')
+
+        except:
+            name = prompt
+            pair = prompt.split(separator)
+            weight = 0
             
-            graph[src_vertice].append([edge_name, edge_value, dst_vertice]) # Add nome da aresta, destino e valor da aresta         
+        finally:
+            pair = name.split(separator)
+            new_edge = Edge(name, pair, weight)
 
-        return graph
+            vertex = graph.getVertex(pair[0])
+            vertex.addEdge(new_edge)
+            graph.addEdge(new_edge)
 
-grafo_instance = Grafo()
-print(grafo_instance.retrieveGraph())
+#print do resultado final
+print(f'directed: {graph.directed}')
+
+for vertex in graph.vertices:
+    print(vertex.name)
+
+for edge in graph.edges:
+    print(edge.name)
