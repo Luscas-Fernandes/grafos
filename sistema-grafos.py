@@ -2,7 +2,7 @@ import sys
 
 class Graph:
 
-    directed = False
+    directed = None
     vertices = []
     edges = []
 
@@ -49,6 +49,11 @@ class Edge:
         self.weight = weight
         
 
+def getSeparator(string):
+
+    for separator in ['--', '->', '<-', '<>']:
+        if string.find(separator) != -1:
+            return separator
 
 graph = Graph()
 
@@ -77,32 +82,124 @@ if len(sys.argv) > 1:
 
         while line:
             line = file.readline()
-            line = line.rstrip('\n')
+            line = line.strip()
 
             if not line:
                 break
 
-            separator = '--'
+            separator = getSeparator(line)
 
-            if line.find(separator) == -1 and line.find('->'):
-                separator = '->'
-                graph.directed = True
+            match separator:
 
-            try:
-                name, weight = line.split(';')
+                case '--':
+                    if graph.directed == None:
+                        graph.directed = False
 
-            except:
-                name = line
-                pair = line.split(separator)
-                weight = 0
+                    elif graph.directed == True:
+                        print("cannot add not-directed edge to directional graph!")
+                        continue
+
+                    try:
+                        name, weight = line.split('$')
+
+                    except:
+
+                        name = line
+                        pair = line.split(separator)
+                        weight = 0
+
+                    finally:
+                        pair = name.split(separator)
+                        new_edge = Edge(name, pair, weight)
+
+                        vertex = graph.getVertex(pair[0])
+                        vertex.addEdge(new_edge)
+                        graph.addEdge(new_edge)
+
+                case '->':
+                    if graph.directed == None:
+                        graph.directed = True
+
+                    elif graph.directed == False:
+                        print("Cannot add directed edge to non-directional graph!")
+                        continue
+
+                    try:
+                        name, weight = line.split('$')
+
+                    except:
+
+                        name = line
+                        pair = line.split(separator)
+                        weight = 0
+
+                    finally:
+                        pair = name.split(separator)
+                        new_edge = Edge(name, pair, weight)
+
+                        vertex = graph.getVertex(pair[0])
+                        vertex.addEdge(new_edge)
+                        graph.addEdge(new_edge)
                 
-            finally:
-                pair = name.split(separator)
-                new_edge = Edge(name, pair, weight)
+                case '<-':
+                    if graph.directed == None:
+                        graph.directed = True
 
-                vertex = graph.getVertex(pair[0])
-                vertex.addEdge(new_edge)
-                graph.addEdge(new_edge)
+                    elif graph.directed == False:
+                        print("Cannot add directed edge to non-directional graph!")
+                        continue
+
+                    try:
+                        name, weight = line.split('$')
+
+                    except:
+
+                        name = line
+                        weight = 0
+
+                    finally:
+                        a, b = name.split(separator)
+                        pair = [b,a]
+                        name = f'{b}->{a}'
+                        new_edge = Edge(name, pair, weight)
+
+                        vertex = graph.getVertex(pair[0])
+                        vertex.addEdge(new_edge)
+                        graph.addEdge(new_edge)
+
+                case '<>':
+                    if graph.directed == None:
+                        graph.directed = True
+
+                    elif graph.directed == False:
+                        print("Cannot add directed edge to non-directional graph!")
+                        continue
+
+                    try:
+                        name, weight = line.split('$')
+
+                    except:
+
+                        name = line
+                        weight = 0
+
+                    finally:
+                        a, b = name.split(separator)
+                        pair = [a,b]
+                        name = f'{a}->{b}'
+                        new_edge = Edge(name, pair, weight)
+
+                        vertex = graph.getVertex(pair[0])
+                        vertex.addEdge(new_edge)
+                        graph.addEdge(new_edge)
+
+                        name = f'{b}->{a}'
+                        pair = [b, a]
+                        new_edge = Edge(name, pair, weight)
+
+                        vertex = graph.getVertex(pair[0])
+                        vertex.addEdge(new_edge)
+                        graph.addEdge(new_edge)
 
 #se for inserção manual:
 else:
@@ -130,27 +227,117 @@ else:
         if not prompt:
             break
 
-        separator = '--'
+        separator = getSeparator(prompt)
 
-        if prompt.find(separator) == -1 and prompt.find('->'):
-            separator = '->'
-            graph.directed = True
+        match separator:
 
-        try:
-            name, weight = prompt.split(';')
+            case '--':
+                if graph.directed == None:
+                    graph.directed = False
 
-        except:
-            name = prompt
-            pair = prompt.split(separator)
-            weight = 0
+                elif graph.directed == True:
+                    print("Cannot add directed edge to non-directional graph!")
+                    continue
+
+                try:
+                    name, weight = prompt.split('$')
+
+                except:
+
+                    name = prompt
+                    pair = prompt.split(separator)
+                    weight = 0
             
-        finally:
-            pair = name.split(separator)
-            new_edge = Edge(name, pair, weight)
+                finally:
+                    pair = name.split(separator)
+                    new_edge = Edge(name, pair, weight)
 
-            vertex = graph.getVertex(pair[0])
-            vertex.addEdge(new_edge)
-            graph.addEdge(new_edge)
+                    vertex = graph.getVertex(pair[0])
+                    vertex.addEdge(new_edge)
+                    graph.addEdge(new_edge)
+
+            case '->':
+                if graph.directed == None:
+                    graph.directed = True
+
+                elif graph.directed == False:
+                    print("Cannot add directional edge to non-directional graph!")
+                    continue
+
+                try:
+                    name, weight = prompt.split('$')
+
+                except:
+
+                    name = prompt
+                    pair = prompt.split(separator)
+                    weight = 0
+            
+                finally:
+                    pair = name.split(separator)
+                    new_edge = Edge(name, pair, weight)
+
+                    vertex = graph.getVertex(pair[0])
+                    vertex.addEdge(new_edge)
+                    graph.addEdge(new_edge)
+
+            case '<-':
+                if graph.directed == None:
+                    graph.directed = True
+
+                elif graph.directed == False:
+                    print("Cannot add directional edge to non-directional graph!")
+                    continue
+
+                try:
+                    name, weight = prompt.split('$')
+
+                except:
+                    name = prompt
+                    weight = 0
+            
+                finally:
+                    a, b = name.split(separator)
+                    pair = [b,a]
+                    name = f'{b}->{a}'
+                    new_edge = Edge(name, pair, weight)
+
+                    vertex = graph.getVertex(pair[0])
+                    vertex.addEdge(new_edge)
+                    graph.addEdge(new_edge)
+
+            case '<>':
+                if graph.directed == None:
+                    graph.directed = True
+
+                elif graph.directed == False:
+                    print("Cannot add directional edge to non-directional graph!")
+                    continue
+
+                try:
+                    name, weight = prompt.split('$')
+
+                except:
+                    name = prompt
+                    weight = 0
+            
+                finally:
+                    a, b = name.split(separator)
+                    pair = [a,b]
+                    name = f'{a}->{b}'
+                    new_edge = Edge(name, pair, weight)
+
+                    vertex = graph.getVertex(pair[0])
+                    vertex.addEdge(new_edge)
+                    graph.addEdge(new_edge)
+
+                    name = f'{b}->{a}'
+                    pair = [b, a]
+                    new_edge = Edge(name, pair, weight)
+
+                    vertex = graph.getVertex(pair[0])
+                    vertex.addEdge(new_edge)
+                    graph.addEdge(new_edge)
 
 #print do resultado final
 print(f'directed: {graph.directed}')
