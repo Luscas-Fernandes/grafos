@@ -10,9 +10,9 @@ class Graph:
         pass
 
     def getVertex(self, name):
-        for vertice in self.vertices:
-            if(vertice.name == name):
-                return vertice
+        for vertex in self.vertices:
+            if(vertex.name == name):
+                return vertex
             
         return None
     
@@ -24,6 +24,38 @@ class Graph:
 
         self.edges.append(new_edge)
 
+    def CreateEmptyAdjMatrix(self):
+        n = len(self.vertices)
+        adj_matrix = [[0 for _ in range(n)] for _ in range(n)]
+
+        return adj_matrix
+    
+    def populateAdjMatrix(self, adj_matrix: object) -> object:
+        import re
+        def printAdjMatrix():
+            for i in range(len(adj_matrix)):
+                for j in range(len(adj_matrix)):
+                    print(f"[{adj_matrix[i][j]}] ", end='')
+                print("\n")
+
+        if self.directed:
+            for edge in self.edges:
+                n1, n2 = filter(None, re.split(r"[<>\-]", edge.name))
+                v1 = self.getVertex(n1) # pega vertice pelo nome
+                v2 = self.getVertex(n2) 
+                adj_matrix[self.vertices.index(v1)][self.vertices.index(v2)] = 1
+            
+        else:
+            for edge in self.edges:
+                n1, n2 = filter(None, re.split(r"[<>\-]", edge.name))
+                v1 = self.getVertex(n1) # pega vertice pelo nome
+                v2 = self.getVertex(n2) 
+                adj_matrix[self.vertices.index(v1)][self.vertices.index(v2)] = 1
+                adj_matrix[self.vertices.index(v2)][self.vertices.index(v1)] = 1
+
+        printAdjMatrix()
+
+        return adj_matrix
 
 class Vertex:
 
@@ -48,6 +80,13 @@ class Edge:
         self.pair = pair
         self.weight = weight
         
+""" def clearScreen(): 
+        from os import system, name
+
+        if name == 'nt':
+            return system('cls')
+        
+        return system('clear') """
 
 def getSeparator(string):
 
@@ -208,6 +247,9 @@ else:
     while name:
         name = input("Input new vertex name: ")
 
+        if not name and not len(graph.vertices):
+            sys.exit("No vertices added in Graph, forced exit!")
+
         if not name:
             break
 
@@ -216,6 +258,8 @@ else:
             continue
 
         graph.vertices.append(Vertex(name))
+
+    adjacencyMatrix = graph.CreateEmptyAdjMatrix()
 
     print("\n\nEdge input format:\n\n(source vertex name)(-- or ->)(destiny vertex name)\nto add weight, add ;(weight)\n\n")
 
@@ -338,12 +382,14 @@ else:
                     vertex = graph.getVertex(pair[0])
                     vertex.addEdge(new_edge)
                     graph.addEdge(new_edge)
+    adjacencyMatrix = graph.populateAdjMatrix(adjacencyMatrix)
 
+# clearScreen() # Só pra limpar o de antes
 #print do resultado final
 print(f'directed: {graph.directed}')
 
 for vertex in graph.vertices:
-    print(vertex.name)
+    print(f"vertex: {vertex.name}")
 
 for edge in graph.edges:
-    print(edge.name)
+    print(f"edge: {edge.name}")
