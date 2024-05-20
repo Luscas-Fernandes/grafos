@@ -57,6 +57,29 @@ def getSeparator(string):
 
 graph = Graph()
 
+def vertexConnections(name):
+    connections = []
+
+    if graph.directed == False:
+        for edge in graph.edges:
+            if name in edge.pair:
+                #adiciona "o outro" na lista de connections
+                connections.append(edge.pair[edge.pair.index(name) - 1 ** 2])
+
+        return set(connections)
+    
+    entry = []
+    exit = []
+
+    for edge in graph.edges:
+        if edge.pair[0] == name:
+            exit.append(edge.pair[1])
+
+        elif edge.pair[1] == name:
+            entry.append(edge.pair[0])
+
+    return [set(entry),set(exit)]
+
 #se for usado o txt para inserir tudo de uma vez:
 if len(sys.argv) > 1:
     filename = sys.argv[1]
@@ -340,6 +363,9 @@ else:
                     graph.addEdge(new_edge)
 
 #print do resultado final
+
+print(f'order: {len(graph.vertices)}')
+print(f'size: {len(graph.vertices) + len(graph.edges)}')
 print(f'directed: {graph.directed}')
 
 for vertex in graph.vertices:
@@ -347,3 +373,15 @@ for vertex in graph.vertices:
 
 for edge in graph.edges:
     print(edge.name)
+
+vertex = input("Input vertex to check connections: ")
+
+if graph.directed:
+    entry, exit = vertexConnections(vertex)
+
+    print('entry:', entry)
+    print('exit:', exit)
+
+else:
+    connections = vertexConnections(vertex)
+    print(connections)
