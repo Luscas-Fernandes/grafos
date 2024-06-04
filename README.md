@@ -1,70 +1,107 @@
-# Grafos
+<span></span>
+---
+# Teoria dos Grafos - AV2
+# MANUAL DE USO E DOCUMENTAÇÃO DO SISTEMA
+**O modo de inserção do sistema depende da linha de comando que inicializa o sistema. Para usar o modo interativo, apenas rode o programa normalmente via terminal, e para o modo de inserção de arquivo, insira o nome do arquivo de entrada após o comando.**
+
+Exemplos:
+
+- python sistema-grafos.py
+- python sistema-grafos.py input.txt
 
 ---
-# MODO INTERATIVO
+## MODO INTERATIVO
+### Adicionar os vértices:
 
-# Adicionar os vértices:
-Simplesmente digite o nome de cada vértice quando pedido
+Para adicionar os vértices deve-se dar enter contendo:
+
+*nome do vértice*
+
+**Ao dar enter numa linha vazia, encerra o estado de inserção de vértices.**
+
+### Adicionar as arestas:
+
+Deve-se inserir as arestas com o seguinte formato:
+
+**Arestas Direcionais:**
+
+ *nome do vértice* -> ou <- ou <> *nome do vértice*
+
+ ENão é possível, depois de inserir uma aresta direcional, inserir arestas não xemplos:
  
-# Adicionar as arestas:
-Para adicionar as arestas deve-se digitar com o padrão de:
+ - V1->V2
+ - A<>B
+ - c<-d
 
-# Arestas nao direcionais:
+**O nome da aresta direcional sempre segue o formato "N1->N2", independente de como foi inserida no sistema. a forma de inserção V1<>V2 adiciona duas arestas independentes, "V1->V2" e "V2->V1".**
 
-# Sem peso
-a--b para arestas não direcionadas e sem peso
+**Arestas Não-Direcionais:**
 
-# Com peso
-a--b$2 para arestas não direcionadas de peso 2
+Deve-se inserir as arestas com o seguinte formato:
 
----
+*nome do vértice* -- *nome do vértice*
 
-# Arestas direcionadas
+Exemplos:
 
-# Sem peso
-a->b, deste modo a apontando para b, arestas sem peso
-a<>b, deste modo bidirecional, arestas sem peso
-a<-b, deste modo b apontando para a, arestas sem peso
+- V1--V2
+- A--B
+- c--d
 
-# Com peso
-a->b$2, deste modo a apontando para b, com peso 2
-a<>b$2, deste modo bidirecional, com peso 2
-a<-b$2, deste modo b apontando para a, com peso 2
+### Sem peso
+apenas o nome da aresta insere-a sem peso (peso 0)
+
+Exemplos:
+
+a--b
+V1<>V2
+A<-B
+
+### Com peso
+deve-se concatenar o peso da aresta em sua inserção da seguinte forma:
+
+*aresta* $ *peso*
+
+Exemplos:
+
+- a--b$10
+- V1--V2$3
+- A->B$5
+
+**Ao dar enter em uma linha vazia, encerra o estado de inserção de arestas.**
 
 ---
 
 # MODO INSERÇÃO DE ARQUIVO
 
-A inserção de arquivo requer os mesmos padrões para funcionamento do que o modo interativo, a unica diferença consiste em que:
-deve-se vir primeiro os vértices, uma linha vazia e as arestas em seguida da linha vazia, ex.:
+O modo de inserção de arquivo segue o mesmo formato do modo interativo, mas deve ser formatado num arquivo txt segundo o exemplo:
 
-a
-b
-c
+*vertices separados por enter*
+*linha vazia*
+*arestas separadas por enter*
+
+Exemplo de arquivo txt:
+
+a<br/>
+b<br/>
+c<br/>
 d
-<!-- LINHA VAZIA AQUI -->
-a--b$2
-a--c$6
-b--c$4
-c--d$9
+<p> 
+a--b$2<br/>
+b--c$3<br/>
+c--d<br/>
+d--a$10<br/>
+</p>
 
 ---
 
-# Funcionamento do código
+## PREVENÇÃO DE ERROS
 
-Não é possível, depois de inserir uma aresta direcional, inserir arestas não direcionais,
+- Não é possível, depois de inserir uma aresta direcional, inserir arestas não direcionais,
 o sistema trata, assim que inserida uma aresta direcional, o grafo todo como direcional, portanto
-torna-se por motivos de proteção ao código impossível de adicionar arestas não direcionais
+torna-se por motivos de proteção ao código impossível de adicionar arestas não direcionais e o oposto
+ocorre ao adicionar-se uma aresta não direcional primeiro.
 
----
-
-Não é possível, depois de inserir uma aresta não direcional, inserir arestas direcionais,
-o sistema trata, assim que inserida uma aresta não direcional, o grafo todo como não direcional, portanto
-torna-se por motivos de proteção ao código impossível de adicionar arestas direcionais
-
---- 
-
-Não é possível inicializar uma aresta que já existe mais de uma vez, pois trata-se de um contexto
+- Não é possível inicializar uma aresta que já existe mais de uma vez, pois trata-se de um contexto
 de grafo simples.
 
 ---
@@ -73,5 +110,5 @@ de grafo simples.
 
 
 Grupo: 
-Lucas Fernandes
-Victor Aroucha
+- Lucas Fernandes
+- Victor Aroucha
