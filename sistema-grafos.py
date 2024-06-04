@@ -1,4 +1,5 @@
 import sys
+import networkx as nx
 
 class Graph:
 
@@ -56,6 +57,44 @@ class Graph:
         printAdjMatrix()
 
         return adj_matrix
+    
+
+    def vertexAdjacents(self, fEdge, sEdge, adjMatrix): # precisa ser testado
+        v1 = self.getVertex(fEdge)
+        v2 = self.getVertex(sEdge)
+        adj = 1 if adjMatrix[v1][v2] else 0 # da p trocar adj = adjMatrix[v1][v2] só kkk
+        sAdj = "" if adj else " not"
+
+        print(F"vertex {v1} and {v2} are{sAdj} adjacent")
+        
+        return adj
+
+    def shortestPath(self, start_name, end_name):
+        if not self.getVertex(start_name) or not self.getVertex(end_name):
+            print(f"One or both vertices not found in the graph: {start_name}, {end_name}")
+            return
+
+        # Create a NetworkX graph inside the method
+        if self.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+
+        # Add vertices
+        for vertex in self.vertices:
+            G.add_node(vertex.name)
+
+        # Add edges
+        for edge in self.edges:
+            G.add_edge(edge.pair[0], edge.pair[1], weight=int(edge.weight))
+
+        try:
+            length = nx.dijkstra_path_length(G, start_name, end_name)
+            path = nx.dijkstra_path(G, start_name, end_name)
+            print(f"Shortest path from {start_name} to {end_name}: {' -> '.join(path)} with distance {length}")
+        except nx.NetworkXNoPath:
+            print(f"No path exists between {start_name} and {end_name}")
+
 
 class Vertex:
 
@@ -80,13 +119,13 @@ class Edge:
         self.pair = pair
         self.weight = weight
         
-""" def clearScreen(): 
+def clearScreen(): 
         from os import system, name
 
         if name == 'nt':
             return system('cls')
         
-        return system('clear') """
+        return system('clear')
 
 def getSeparator(string):
 
@@ -405,29 +444,90 @@ else:
                     vertex = graph.getVertex(pair[0])
                     vertex.addEdge(new_edge)
                     graph.addEdge(new_edge)
-    adjacencyMatrix = graph.populateAdjMatrix(adjacencyMatrix)
+    
 
 # clearScreen() # Só pra limpar o de antes
 #print do resultado final
 
-print(f'order: {len(graph.vertices)}')
-print(f'size: {len(graph.vertices) + len(graph.edges)}')
-print(f'directed: {graph.directed}')
+while True:
+    
+    try:
+        command = int(input('\n=======================================\n1 - Check graph properties\n2 - Print vertices and edges\n3 - Check single vertex connections\n4 - Dijskstra\n5 - Adjacent Matrix\n6 - Check if vertices are adjacent\n7 - Exit\n: '))
+    except ValueError("Invalid input, not an int\nDigita um melhor") as e:
+        print(e)
+        
 
-for vertex in graph.vertices:
-    print(f"vertex: {vertex.name}")
+    match command:
+        case 1:
+            print('\n')
+            print(f'order: {len(graph.vertices)}')
+            print(f'size: {len(graph.vertices) + len(graph.edges)}')
+            print(f'directed: {graph.directed}')
+            input("\npress enter to continue")
+            clearScreen()
+        case 2:
+            print('\n')
+            for i, vertex in enumerate(graph.vertices):
+                print(f"vertice {i}: {vertex.name}")
 
-for edge in graph.edges:
-    print(edge.name)
+            for edge in graph.edges:
+                print(edge.name)
+            input("\npress enter to continue")
+            clearScreen()
+        case 3:
+            vertex = input("\nInput vertex to check connections: ")
 
-vertex = input("Input vertex to check connections: ")
+            print('\n')
 
-if graph.directed:
-    entry, exit = vertexConnections(vertex)
+            if graph.directed:
+                entry, exit = vertexConnections(vertex)
 
-    print('entry:', entry)
-    print('exit:', exit)
+                print('entry:', entry)
+                print('exit:', exit)
+                print(f'\nDegree: {len(entry) + len(exit)}')
+            
+            else:
+                connections = vertexConnections(vertex)
+                print(connections)
+                print(f'\nDegree: {len(connections)}')
+            input("\npress enter to continue")
+            clearScreen()
+        case 4:
+            v1 = input("Type the origin vertex to check the shortest path between them: ")
+            v2 = input("Type the destiny vertex to check the shortest path between them: ")
+            shortestPath = graph.shortestPath(v1, v2)
+            input("\npress enter to continue")
+            clearScreen()
+        case 5:
+            adjacencyMatrix = graph.CreateEmptyAdjMatrix()
+            adjacencyMatrix = graph.populateAdjMatrix(adjacencyMatrix)
+            input("\npress enter to continue")
+            clearScreen()
+        case 6:
+            v1 = input("Type the origin vertex to check they are adjacent: ")
+            v2 = input("Type the destiny vertex to check they are adjacent: ")
 
-else:
-    connections = vertexConnections(vertex)
-    print(connections)
+            print('\n')
+
+            if graph.directed:
+                entry, exit = vertexConnections(v1)
+
+                if v2 in entry or v2 in exit:
+                    print(f"vertex {v1} and {v2} are adjacent")
+                else:
+                    print(f"vertex {v1} and {v2} are not adjacent")
+            
+            else:
+                connections = vertexConnections(v1)
+
+                if v2 in connections:
+                    print(f"vertex {v1} and {v2} are adjacent")
+                else:
+                    print(f"vertex {v1} and {v2} are not adjacent")
+    
+            input("\npress enter to continue")
+            clearScreen()
+        case 7:
+            print("\nShutting down...\n")
+            exit()
+        
