@@ -4,6 +4,7 @@ import networkx as nx
 class Graph:
 
     directed = None
+    weighted = False
     vertices = []
     edges = []
 
@@ -34,6 +35,9 @@ class Graph:
     def populateAdjMatrix(self, adj_matrix: object) -> object:
         import re
         def printAdjMatrix():
+            for i in range(len(graph.vertices)):
+                print(f"[{graph.vertices[i].name}] ", end='')
+            print("\n\n")
             for i in range(len(adj_matrix)):
                 for j in range(len(adj_matrix)):
                     print(f"[{adj_matrix[i][j]}] ", end='')
@@ -202,6 +206,8 @@ if len(sys.argv) > 1:
 
                     try:
                         name, weight = line.split('$')
+                        if weight:
+                            graph.weighted = True
 
                     except:
 
@@ -227,6 +233,8 @@ if len(sys.argv) > 1:
 
                     try:
                         name, weight = line.split('$')
+                        if weight:
+                            graph.weighted = True
 
                     except:
 
@@ -347,6 +355,8 @@ else:
 
                 try:
                     name, weight = prompt.split('$')
+                    if weight:
+                        graph.weighted = True
 
                 except:
 
@@ -372,6 +382,8 @@ else:
 
                 try:
                     name, weight = prompt.split('$')
+                    if weight:
+                        graph.weighted = True
 
                 except:
 
@@ -397,6 +409,8 @@ else:
 
                 try:
                     name, weight = prompt.split('$')
+                    if weight:
+                        graph.weighted = True
 
                 except:
                     name = prompt
@@ -422,6 +436,8 @@ else:
 
                 try:
                     name, weight = prompt.split('$')
+                    if weight:
+                        graph.weighted = True
 
                 except:
                     name = prompt
@@ -445,36 +461,40 @@ else:
                     vertex.addEdge(new_edge)
                     graph.addEdge(new_edge)
     
-
-# clearScreen() # Só pra limpar o de antes
-#print do resultado final
+clearScreen()
 
 while True:
     
     try:
-        command = int(input('\n=======================================\n1 - Check graph properties\n2 - Print vertices and edges\n3 - Check single vertex connections\n4 - Dijskstra\n5 - Adjacent Matrix\n6 - Check if vertices are adjacent\n7 - Exit\n: '))
+        command = int(input('\n=====================================================\n\n1 - Check graph properties\n2 - Print vertices and edges\n3 - Check single vertex connections\n4 - Shortest path between two vertices\n5 - Adjacent Matrix\n6 - Check if vertices are adjacent\n7 - Exit\n: '))
     except ValueError("Invalid input, not an int\nDigita um melhor") as e:
         print(e)
         
 
     match command:
         case 1:
+            clearScreen()
             print('\n')
             print(f'order: {len(graph.vertices)}')
-            print(f'size: {len(graph.vertices) + len(graph.edges)}')
+            print(f'size: {len(graph.edges)}')
             print(f'directed: {graph.directed}')
+            print(f'weighted: {graph.weighted}')
             input("\npress enter to continue")
             clearScreen()
         case 2:
+            clearScreen()
             print('\n')
             for i, vertex in enumerate(graph.vertices):
                 print(f"vertice {i}: {vertex.name}")
+
+            print('\n')
 
             for edge in graph.edges:
                 print(edge.name)
             input("\npress enter to continue")
             clearScreen()
         case 3:
+            clearScreen()
             vertex = input("\nInput vertex to check connections: ")
 
             print('\n')
@@ -484,7 +504,8 @@ while True:
 
                 print('entry:', entry)
                 print('exit:', exit)
-                print(f'\nDegree: {len(entry) + len(exit)}')
+                print(f'\nDegree entry: {len(entry)}')
+                print(f'\nDegree exit: {len(exit)}')
             
             else:
                 connections = vertexConnections(vertex)
@@ -493,17 +514,20 @@ while True:
             input("\npress enter to continue")
             clearScreen()
         case 4:
+            clearScreen()
             v1 = input("Type the origin vertex to check the shortest path between them: ")
             v2 = input("Type the destiny vertex to check the shortest path between them: ")
             shortestPath = graph.shortestPath(v1, v2)
             input("\npress enter to continue")
             clearScreen()
         case 5:
+            clearScreen()
             adjacencyMatrix = graph.CreateEmptyAdjMatrix()
             adjacencyMatrix = graph.populateAdjMatrix(adjacencyMatrix)
             input("\npress enter to continue")
             clearScreen()
         case 6:
+            clearScreen()
             v1 = input("Type the origin vertex to check they are adjacent: ")
             v2 = input("Type the destiny vertex to check they are adjacent: ")
 
@@ -528,6 +552,6 @@ while True:
             input("\npress enter to continue")
             clearScreen()
         case 7:
+            clearScreen()
             print("\nShutting down...\n")
             exit()
-        
