@@ -27,7 +27,7 @@ Deve-se inserir as arestas com o seguinte formato:
 
  *nome do vértice* -> ou <- ou <> *nome do vértice*
 
- ENão é possível, depois de inserir uma aresta direcional, inserir arestas não xemplos:
+ Não é possível, depois de inserir uma aresta direcional, inserir arestas não xemplos:
  
  - V1->V2
  - A<>B
